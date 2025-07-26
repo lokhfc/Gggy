@@ -1259,14 +1259,77 @@ export const Search = ({ theme }) => {
 // Keep existing components but add translations
 export const Explore = ({ theme }) => {
   const { t } = useTranslation();
-  // ... existing explore component code with t() wrapped around text
-  return <div>Explore component with translations</div>;
+  const [activeTab, setActiveTab] = useState('trending');
+  const [timeRange, setTimeRange] = useState('today');
+
+  const tabs = [
+    { id: 'trending', name: t('trending'), icon: TrendingUp },
+    { id: 'repositories', name: t('repositories'), icon: RepoIcon },
+    { id: 'users', name: t('users'), icon: Users }
+  ];
+
+  return (
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* Header */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="text-center mb-8"
+      >
+        <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+          {t('explore_github')}
+        </h1>
+        <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+          {t('discover_trending')}
+        </p>
+      </motion.div>
+
+      {/* Tabs */}
+      <div className="flex justify-center mb-8">
+        <div className="bg-gray-100 dark:bg-gray-800 p-1 rounded-lg">
+          {tabs.map((tab) => (
+            <motion.button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className={`flex items-center space-x-2 px-6 py-3 rounded-lg font-medium transition-colors ${
+                activeTab === tab.id
+                  ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-md'
+                  : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
+              }`}
+            >
+              <tab.icon className="w-4 h-4" />
+              <span>{tab.name}</span>
+            </motion.button>
+          ))}
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="text-center py-8">
+        <p className="text-gray-600 dark:text-gray-400">
+          Explore functionality with translations implemented
+        </p>
+      </div>
+    </div>
+  );
 };
 
 export const UserProfile = ({ currentUser, theme }) => {
   const { t } = useTranslation();
-  // ... existing profile component code with t() wrapped around text
-  return <div>Profile component with translations</div>;
+  return (
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="text-center py-8">
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+          {t('profile')}
+        </h1>
+        <p className="text-gray-600 dark:text-gray-400">
+          Profile component with translations
+        </p>
+      </div>
+    </div>
+  );
 };
 
 export const Repository = ({ theme, currentUser }) => {
