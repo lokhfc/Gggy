@@ -26,7 +26,7 @@ import {
   Home,
   Compass,
   User,
-  Repository as RepoIcon,
+  Folder as RepoIcon,
   TrendingUp,
   Flame,
   Globe,
