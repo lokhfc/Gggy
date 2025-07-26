@@ -1,8 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useEffect, useRef } from 'react';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
+import { useForm } from 'react-hook-form';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
 import {
-  Search,
+  Search as SearchIcon,
   Bell,
   Plus,
   ChevronDown,
@@ -35,7 +42,28 @@ import {
   Heart,
   Zap,
   Coffee,
-  Sparkles
+  Sparkles,
+  Github,
+  Lock,
+  Unlock,
+  UserPlus,
+  Filter,
+  SortDesc,
+  Languages,
+  PieChart,
+  GitCommit,
+  Activity,
+  Shield,
+  Mail,
+  LogOut,
+  Edit,
+  Save,
+  Trash2,
+  Copy,
+  ExternalLink,
+  Check,
+  AlertCircle,
+  Info
 } from 'lucide-react';
 
 // Mock data
