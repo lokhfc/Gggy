@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import './App.css';
+import './i18n';
 import { 
   Header, 
   Dashboard, 
@@ -9,11 +11,16 @@ import {
   Repository, 
   Explore, 
   Settings,
-  AIChat 
+  AIChat,
+  Auth,
+  Search,
+  Collaborators
 } from './components';
 
 function App() {
+  const { i18n } = useTranslation();
   const [theme, setTheme] = useState('dark');
+  const [isAuthenticated, setIsAuthenticated] = useState(true); // Set to false for login flow
   const [currentUser, setCurrentUser] = useState({
     id: 1,
     username: 'john_coder',
@@ -26,11 +33,18 @@ function App() {
     repositories: 89,
     location: 'San Francisco, CA',
     company: 'Tech Corp',
-    website: 'https://johndoe.dev'
+    website: 'https://johndoe.dev',
+    timezone: 'America/Los_Angeles',
+    preferredLanguage: 'en'
   });
 
   const toggleTheme = () => {
     setTheme(theme === 'dark' ? 'light' : 'dark');
+  };
+
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+    setCurrentUser(prev => ({ ...prev, preferredLanguage: lng }));
   };
 
   useEffect(() => {
@@ -58,6 +72,23 @@ function App() {
     duration: 0.5
   };
 
+  if (!isAuthenticated) {
+    return (
+      <div className={`App min-h-screen ${theme}`}>
+        <div className="bg-gray-50 dark:bg-gray-900 min-h-screen transition-colors duration-300">
+          <Auth 
+            onLogin={(user) => {
+              setCurrentUser(user);
+              setIsAuthenticated(true);
+            }}
+            theme={theme}
+            toggleTheme={toggleTheme}
+          />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={`App min-h-screen ${theme}`}>
       <div className="bg-gray-50 dark:bg-gray-900 min-h-screen transition-colors duration-300">
@@ -65,7 +96,9 @@ function App() {
           <Header 
             currentUser={currentUser} 
             theme={theme} 
-            toggleTheme={toggleTheme} 
+            toggleTheme={toggleTheme}
+            onLanguageChange={changeLanguage}
+            onLogout={() => setIsAuthenticated(false)}
           />
           
           <AnimatePresence mode="wait">
@@ -99,6 +132,20 @@ function App() {
                 } 
               />
               <Route 
+                path="/search" 
+                element={
+                  <motion.div
+                    initial="initial"
+                    animate="in"
+                    exit="out"
+                    variants={pageVariants}
+                    transition={pageTransition}
+                  >
+                    <Search theme={theme} />
+                  </motion.div>
+                } 
+              />
+              <Route 
                 path="/profile/:username" 
                 element={
                   <motion.div
@@ -122,7 +169,21 @@ function App() {
                     variants={pageVariants}
                     transition={pageTransition}
                   >
-                    <Repository theme={theme} />
+                    <Repository theme={theme} currentUser={currentUser} />
+                  </motion.div>
+                } 
+              />
+              <Route 
+                path="/repository/:owner/:name/collaborators" 
+                element={
+                  <motion.div
+                    initial="initial"
+                    animate="in"
+                    exit="out"
+                    variants={pageVariants}
+                    transition={pageTransition}
+                  >
+                    <Collaborators theme={theme} currentUser={currentUser} />
                   </motion.div>
                 } 
               />
@@ -136,7 +197,13 @@ function App() {
                     variants={pageVariants}
                     transition={pageTransition}
                   >
-                    <Settings currentUser={currentUser} theme={theme} />
+                    <Settings 
+                      currentUser={currentUser} 
+                      theme={theme} 
+                      onThemeChange={toggleTheme}
+                      onLanguageChange={changeLanguage}
+                      onUserUpdate={setCurrentUser}
+                    />
                   </motion.div>
                 } 
               />
@@ -144,7 +211,7 @@ function App() {
             </Routes>
           </AnimatePresence>
 
-          <AIChat theme={theme} />
+          <AIChat theme={theme} currentUser={currentUser} />
         </Router>
       </div>
     </div>
